@@ -50,8 +50,9 @@ MAJ = 7
 MIN = 2
 SO = @so@
 SO_LINK = @so_link@
+STATIC= @static@
 
-all:		${SO}
+all:		${SO} ${STATIC}
 		for i in ${SO_LINK}; do ln -sf ${SO} $$i; done
 
 install:
@@ -62,6 +63,7 @@ install:
 		mkdir -p ${DESTDIR}${MAN7_DIR}
 		cp sndio.h ${DESTDIR}${INCLUDE_DIR}
 		cp -R ${SO} ${SO_LINK} ${DESTDIR}${LIB_DIR}
+		cp -R ${STATIC} ${DESTDIR}${LIB_DIR}
 		cp sndio.pc ${DESTDIR}${PKGCONF_DIR}
 		cp sio_open.3 ${DESTDIR}${MAN3_DIR}
 		ln -sf sio_open.3 ${DESTDIR}${MAN3_DIR}/sio_close.3
@@ -126,6 +128,9 @@ getpeereid.o issetugid.o strlcat.o strlcpy.o strtonum.o clock_gettime.o
 
 ${SO}:		${OBJS}
 		${CC} ${LDFLAGS} ${SO_CFLAGS} ${SO_LDFLAGS} -o ${SO} ${OBJS} ${LDADD}
+
+${STATIC}:	${OBJS}
+		${AR} r ${STATIC} ${OBJS}
 
 getpeereid.o:	../bsd-compat/getpeereid.c
 		${CC} ${CFLAGS} ${SO_CFLAGS} ${INCLUDE} ${DEFS} -c -o getpeereid.o ../bsd-compat/getpeereid.c
